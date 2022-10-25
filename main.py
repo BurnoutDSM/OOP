@@ -7,6 +7,9 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
 
+    def __str__(self):
+        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_student()} \nКурсы в процессе обучения: {self.courses_in_progress} \nЗавершенные курсы: {self.finished_coursed}'
+
     def rate_lecturer(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
             if grade < 11 and grade > 0:
@@ -25,9 +28,6 @@ class Student:
             all_grades += grade
         return round(sum(all_grades) / len(all_grades), 1)
 
-    def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_student()} \nКурсы в процессе обучения: {self.courses_in_progress} \nЗавершенные курсы: {self.finished_coursed}'
-
 
 class Mentor:
     def __init__(self, name, surname):
@@ -41,6 +41,9 @@ class Lecturer(Mentor):
         super().__init__(name, surname)
         self.grade_from_students = {}
 
+    def __str__(self):
+        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}'
+
     def calculate_average_grade_lecturer(self):
         all_grades = []
         for grade in self.grade_from_students.values():
@@ -51,22 +54,21 @@ class Lecturer(Mentor):
         except:
             return 'что-то пошло не так'
 
-    def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}'
-
 
 class Reviewer(Mentor):
+    def __str__(self):
+        return f'Имя: {self.name} \nФамилия: {self.surname}'
+
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in student.courses_in_progress:
-            if course in student.grades:
-                student.grades[course] += [grade]
-            else:
-                student.grades[course] = [grade]
+            if grade < 11 and grade > 0:
+                if course in student.grades:
+                    student.grades[course] += [grade]
+                else:
+                    student.grades[course] = [grade]
         else:
             return 'Ошибка'
 
-    def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname}'
 
 
     #Студенты
@@ -119,18 +121,16 @@ harry_student.rate_lecturer(hannibal_lecturer, 'Git', 7)
 
 
 def compare_people(student, lecturer):
-    # student = jesse_student
-    # lecturer = walter_lecturer
-
     if student.calculate_average_grade_student() < lecturer.calculate_average_grade_lecturer():
-        return f'{student.surname} {student.calculate_average_grade_student()} < {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
+        return f'Соотношение оценок: {student.surname} {student.calculate_average_grade_student()} < {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
 
     elif student.calculate_average_grade_student() > lecturer.calculate_average_grade_lecturer():
-        return f'{student.surname} {student.calculate_average_grade_student()} > {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
+        return f'Соотношение оценок: {student.surname} {student.calculate_average_grade_student()} > {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
 
     elif student.calculate_average_grade_student() == lecturer.calculate_average_grade_lecturer():
-        return f'{student.surname} {student.calculate_average_grade_student()} = {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
-
+        return f'Соотношение оценок: {student.surname} {student.calculate_average_grade_student()} = {lecturer.surname} {lecturer.calculate_average_grade_lecturer()}'
+    else:
+        return 'Что-то пошло не так'
 
 
 def calculate_average_grade_course_stud(all_students, course):
@@ -139,9 +139,10 @@ def calculate_average_grade_course_stud(all_students, course):
         if course in student.grades:
             course_grade += student.grades[course]
     try:
-        return round(sum(course_grade) / len(course_grade), 1 )
+        return round(sum(course_grade) / len(course_grade), 1)  #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызыва функции
     except:
         return 'что-то пошло не так'
+
 
 def calculate_average_grade_course_lect(all_lecturer, course):
     course_grade = []
@@ -149,10 +150,14 @@ def calculate_average_grade_course_lect(all_lecturer, course):
         if course in lecturer.grade_from_students:
             course_grade += lecturer.grade_from_students[course]
     try:
-        return round(sum(course_grade) / len(course_grade), 1)
+        return round(sum(course_grade) / len(course_grade), 1)      #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызыва функции
     except:
         return 'что-то пошло не так'
 
 
+print(jesse_student)
 print(calculate_average_grade_course_stud([jesse_student, harry_student], 'Python'))
 print(calculate_average_grade_course_lect([hannibal_lecturer, walter_lecturer], 'Git'))
+print(compare_people(jesse_student, walter_lecturer))
+print(hannibal_lecturer.calculate_average_grade_lecturer())
+print(harry_student.calculate_average_grade_student())
