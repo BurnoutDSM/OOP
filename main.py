@@ -139,7 +139,7 @@ def calculate_average_grade_course_stud(all_students, course):
         if course in student.grades:
             course_grade += student.grades[course]
     try:
-        return round(sum(course_grade) / len(course_grade), 1)  #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызыва функции
+        return round(sum(course_grade) / len(course_grade), 1)  #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызова функции
     except:
         return 'что-то пошло не так'
 
@@ -150,7 +150,7 @@ def calculate_average_grade_course_lect(all_lecturer, course):
         if course in lecturer.grade_from_students:
             course_grade += lecturer.grade_from_students[course]
     try:
-        return round(sum(course_grade) / len(course_grade), 1)      #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызыва функции
+        return round(sum(course_grade) / len(course_grade), 1)      #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызова функции
     except:
         return 'что-то пошло не так'
 
