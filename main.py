@@ -8,15 +8,15 @@ class Student:
         self.grades = {}
 
     def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_student()} \nКурсы в процессе обучения: {self.courses_in_progress} \nЗавершенные курсы: {self.finished_coursed}'
+        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_student()} \nКурсы в процессе обучения: {", ".join(self.courses_in_progress)} \nЗавершенные курсы: {", ".join(self.finished_coursed)}'
 
     def rate_lecturer(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
             if grade < 11 and grade > 0:
-                if course in lecturer.grade_from_students:
-                    lecturer.grade_from_students[course] += [grade]
+                if course in lecturer.grades:
+                    lecturer.grades[course] += [grade]
                 else:
-                    lecturer.grade_from_students[course] = [grade]
+                    lecturer.grades[course] = [grade]
             else:
                 return 'Оценка не соответсвут критериям'
         else:
@@ -24,9 +24,12 @@ class Student:
 
     def calculate_average_grade_student(self):
         all_grades = []
-        for grade in self.grades.values():
-            all_grades += grade
-        return round(sum(all_grades) / len(all_grades), 1)
+        if not self.grades:
+            return 0
+        else:
+            for grade in self.grades.values():
+                all_grades += grade
+            return round(sum(all_grades) / len(all_grades), 1)
 
 
 class Mentor:
@@ -39,20 +42,19 @@ class Mentor:
 class Lecturer(Mentor):
     def __init__(self, name, surname):
         super().__init__(name, surname)
-        self.grade_from_students = {}
+        self.grades = {}
 
     def __str__(self):
         return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}'
 
     def calculate_average_grade_lecturer(self):
         all_grades = []
-        for grade in self.grade_from_students.values():
-            all_grades += grade
-
-        try:
+        if not self.grades:
+            return 0
+        else:
+            for grade in self.grades.values():
+                all_grades += grade
             return round(sum(all_grades) / len(all_grades), 1)
-        except:
-            return 'что-то пошло не так'
 
 
 class Reviewer(Mentor):
@@ -119,6 +121,10 @@ harry_student.rate_lecturer(walter_lecturer, 'Git', 10)
 harry_student.rate_lecturer(hannibal_lecturer, 'Python', 10)
 harry_student.rate_lecturer(hannibal_lecturer, 'Git', 7)
 
+    #Списки по принадлежности
+students = [jesse_student, harry_student]
+lecturers = [walter_lecturer, hannibal_lecturer]
+reviewers = [hank_reviewer, harley_reviewer]
 
 def compare_people(student, lecturer):
     if student.calculate_average_grade_student() < lecturer.calculate_average_grade_lecturer():
@@ -133,31 +139,28 @@ def compare_people(student, lecturer):
         return 'Что-то пошло не так'
 
 
-def calculate_average_grade_course_stud(all_students, course):
+def calculate_average_grade_course_stud(persons, course):
     course_grade = []
-    for student in all_students:
-        if course in student.grades:
-            course_grade += student.grades[course]
-    try:
-        return round(sum(course_grade) / len(course_grade), 1)  #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызова функции
-    except:
-        return 'что-то пошло не так'
+    for person in persons:
+        if course in person.grades:
+            course_grade += person.grades[course]
+    return round(sum(course_grade) / len(course_grade), 1)
 
 
-def calculate_average_grade_course_lect(all_lecturer, course):
+def calculate_average_grade_course(persons, course):
+    if not isinstance(persons, list):
+        return 'Нет списка'
     course_grade = []
-    for lecturer in all_lecturer:
-        if course in lecturer.grade_from_students:
-            course_grade += lecturer.grade_from_students[course]
-    try:
-        return round(sum(course_grade) / len(course_grade), 1)      #Оставляю в таком виде, что бы с полученными данными можно было работать при необходимости после вызова функции
-    except:
-        return 'что-то пошло не так'
+    for person in persons:
+        course_grade.extend(person.grades[course])
+    if course_grade == []:
+        return 'По данному курсу оценок нет'
+    return round(sum(course_grade) / len(course_grade), 1)
 
 
-print(jesse_student)
-print(calculate_average_grade_course_stud([jesse_student, harry_student], 'Python'))
-print(calculate_average_grade_course_lect([hannibal_lecturer, walter_lecturer], 'Git'))
+# print(jesse_student)
+print(calculate_average_grade_course(students, 'Python'))
+print(calculate_average_grade_course(lecturers, 'Git'))
 print(compare_people(jesse_student, walter_lecturer))
 print(hannibal_lecturer.calculate_average_grade_lecturer())
 print(harry_student.calculate_average_grade_student())
