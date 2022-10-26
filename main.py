@@ -105,7 +105,7 @@ hannibal_lecturer.courses_attached += ['Git']
 hank_reviewer.rate_hw(jesse_student, 'Python', 10)
 hank_reviewer.rate_hw(jesse_student, 'Python', 9)
 hank_reviewer.rate_hw(harry_student, 'Python', 9)
-hank_reviewer.rate_hw(harry_student, 'Python', 10)
+hank_reviewer.rate_hw(harry_student, 'Python', 8)
 harley_reviewer.rate_hw(jesse_student, 'Git', 8)
 harley_reviewer.rate_hw(jesse_student, 'Git', 9)
 harley_reviewer.rate_hw(harry_student, 'Git', 10)
@@ -139,24 +139,30 @@ def compare_people(student, lecturer):
         return 'Что-то пошло не так'
 
 
-def calculate_average_grade_course_stud(persons, course):
-    course_grade = []
-    for person in persons:
-        if course in person.grades:
-            course_grade += person.grades[course]
-    return round(sum(course_grade) / len(course_grade), 1)
-
-
 def calculate_average_grade_course(persons, course):
     if not isinstance(persons, list):
         return 'Нет списка'
     course_grade = []
     for person in persons:
-        course_grade.extend(person.grades[course])
+        if course in person.grades:
+            course_grade += person.grades[course]
     if course_grade == []:
         return 'По данному курсу оценок нет'
     return round(sum(course_grade) / len(course_grade), 1)
 
+
+# def calculate_average_grade_course2(persons, course):
+#     if not isinstance(persons, list):
+#         return 'Нет списка'
+#     course_grade = []
+#     for person in persons:
+#         course_grade.extend(person.grades[course].get(course, []))
+#     if course_grade == []:
+#         return 'По данному курсу оценок нет'
+#     return round(sum(course_grade) / len(course_grade), 1)
+        #Закоментированный метод у меня не получился. Насколько я понял проблема в том, что я метод гет применяю к списку.
+        #Пытаться переделывать код я не стал т.к. счтаю первую конструкцию достаточно простой для использования (и мне надо курс догонять =) ).
+        #P.S. Спасибо за все советы и помощь)
 
 # print(jesse_student)
 print(calculate_average_grade_course(students, 'Python'))
