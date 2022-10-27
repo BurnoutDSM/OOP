@@ -17,19 +17,21 @@ class Student:
                     lecturer.grades[course] += [grade]
                 else:
                     lecturer.grades[course] = [grade]
-            else:
-                return 'Оценка не соответсвут критериям'
-        else:
-            return 'Ошибка'
+            return 'Оценка не соответсвут критериям'
+        return 'Ошибка'
+
+    def __eq__(self, other):
+        if not isinstance(other, Lecturer):
+            raise Exception('Лектор отсутствует')
+        return self.calculate_average_grade_student() == other.calculate_average_grade_lecturer()
 
     def calculate_average_grade_student(self):
         all_grades = []
         if not self.grades:
             return 0
-        else:
-            for grade in self.grades.values():
-                all_grades += grade
-            return round(sum(all_grades) / len(all_grades), 1)
+        for grade in self.grades.values():
+            all_grades += grade
+        return round(sum(all_grades) / len(all_grades), 1)
 
 
 class Mentor:
@@ -51,10 +53,9 @@ class Lecturer(Mentor):
         all_grades = []
         if not self.grades:
             return 0
-        else:
-            for grade in self.grades.values():
-                all_grades += grade
-            return round(sum(all_grades) / len(all_grades), 1)
+        for grade in self.grades.values():
+            all_grades += grade
+        return round(sum(all_grades) / len(all_grades), 1)
 
 
 class Reviewer(Mentor):
@@ -148,6 +149,7 @@ def calculate_average_grade_course(persons, course):
             course_grade += person.grades[course]
     if course_grade == []:
         return 'По данному курсу оценок нет'
+
     return round(sum(course_grade) / len(course_grade), 1)
 
 
@@ -164,9 +166,10 @@ def calculate_average_grade_course(persons, course):
         #Пытаться переделывать код я не стал т.к. счтаю первую конструкцию достаточно простой для использования (и мне надо курс догонять =) ).
         #P.S. Спасибо за все советы и помощь)
 
-# print(jesse_student)
+print(harry_student(hannibal_lecturer))
+print(jesse_student)
 print(calculate_average_grade_course(students, 'Python'))
 print(calculate_average_grade_course(lecturers, 'Git'))
 print(compare_people(jesse_student, walter_lecturer))
 print(hannibal_lecturer.calculate_average_grade_lecturer())
-print(harry_student.calculate_average_grade_student())
+print(jesse_student.calculate_average_grade_student())
