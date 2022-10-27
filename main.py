@@ -62,7 +62,10 @@ class Lecturer(Mentor):
         self.grades = {}
 
     def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}'
+        return f'''Имя: {self.name}
+            \rФамилия: {self.surname}
+            \rСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}
+        '''
 
     def __eq__(self, other):
         if not isinstance(other, Student):
