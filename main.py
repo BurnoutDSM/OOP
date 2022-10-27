@@ -8,7 +8,12 @@ class Student:
         self.grades = {}
 
     def __str__(self):
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_student()} \nКурсы в процессе обучения: {", ".join(self.courses_in_progress)} \nЗавершенные курсы: {", ".join(self.finished_coursed)}'
+        return f'''Имя: {self.name}
+            \rФамилия: {self.surname}
+            \rСредняя оценка за лекцию: {self.calculate_average_grade_student()}
+            \rКурсы в процессе обучения: {", ".join(self.courses_in_progress)}
+            \rЗавершенные курсы: {", ".join(self.finished_coursed)}
+        '''
 
     def rate_lecturer(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
@@ -24,6 +29,16 @@ class Student:
         if not isinstance(other, Lecturer):
             raise Exception('Лектор отсутствует')
         return self.calculate_average_grade_student() == other.calculate_average_grade_lecturer()
+
+    def __le__(self, other):
+        if not isinstance(other, Lecturer):
+            raise Exception('Лектор отсутствует')
+        return self.calculate_average_grade_student() < other.calculate_average_grade_lecturer()
+
+    def __lt__(self, other):
+        if not isinstance(other, Lecturer):
+            raise Exception('Лектор отсутствует')
+        return self.calculate_average_grade_student() <= other.calculate_average_grade_lecturer()
 
     def calculate_average_grade_student(self):
         all_grades = []
@@ -48,6 +63,21 @@ class Lecturer(Mentor):
 
     def __str__(self):
         return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекцию: {self.calculate_average_grade_lecturer()}'
+
+    def __eq__(self, other):
+        if not isinstance(other, Student):
+            raise Exception('Студент отсутствует')
+        return self.calculate_average_grade_lecturer() == other.calculate_average_grade_student()
+
+    def __le__(self, other):
+        if not isinstance(other, Student):
+            raise Exception('Студент отсутствует')
+        return self.calculate_average_grade_lecturer() < other.calculate_average_grade_student()
+
+    def __lt__(self, other):
+        if not isinstance(other, Student):
+            raise Exception('Студент отсутсвует')
+        return self.calculate_average_grade_lecturer() <= other.calculate_average_grade_student()
 
     def calculate_average_grade_lecturer(self):
         all_grades = []
@@ -166,8 +196,8 @@ def calculate_average_grade_course(persons, course):
         #Пытаться переделывать код я не стал т.к. счтаю первую конструкцию достаточно простой для использования (и мне надо курс догонять =) ).
         #P.S. Спасибо за все советы и помощь)
 
-print(harry_student(hannibal_lecturer))
-print(jesse_student)
+print(harry_student)
+print(jesse_student != hannibal_lecturer)
 print(calculate_average_grade_course(students, 'Python'))
 print(calculate_average_grade_course(lecturers, 'Git'))
 print(compare_people(jesse_student, walter_lecturer))
