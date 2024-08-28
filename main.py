@@ -17,7 +17,7 @@ class Student:
 
     def rate_lecturer(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
-            if grade < 11 and grade > 0:
+            if 11 > grade > 0:
                 if course in lecturer.grades:
                     lecturer.grades[course] += [grade]
                 else:
